@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 import requests
+import websockets
+import asyncio
 import socket
 import os
 from _thread import start_new_thread
 
 
 class server(object):
-    def __init__(self, host, port):
+    def __init__(self, host, port, wsport):
         self.host = host
         self.port = port
+        self.wsport = wsport
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.host, self.port))
@@ -18,13 +21,20 @@ class server(object):
         self.socket.listen(5)
         while True:
             client, addr = self.socket.accept()
-            start_new_thread(self.listenToClient, (client, addr))
+            #start_new_thread(self.listenToClient, (client, addr))
+            self.listenToClient(client, addr)
 
     def listenToClient(self, client, addr):
         sendmsg = self.server()
         bytes = sendmsg.encode()
-        client.send(bytes)
-        client.close()
+
+        async def upgradeToWebsocket(websocket, path):
+            await websocket.send(bytes)
+
+        start_server = websockets.serve(upgradeToWebsocket, self.host,
+                                        self.wsport)
+        asyncio.get_event_loop().run_until_complete(start_server)
+        asyncio.get_event_loop().run_forever()
 
     def server(self):
         # TO-DO
@@ -33,7 +43,7 @@ class server(object):
 
 if __name__ == '__main__':
     try:
-        serve = server('localhost', 13337)
+        serve = server('localhost', 13337, 13338)
         serve.listen()
     except socket.error as e:
         print("Error here: ", str(e))
