@@ -5,6 +5,7 @@ import socket
 import os
 from _thread import *
 
+
 class server(object):
     def __init__(self, host, port):
         self.host = host
@@ -29,9 +30,10 @@ class server(object):
         # TO-DO
         return 'data'
 
+
 if __name__ == '__main__':
     try:
         serve = server('localhost', 13337)
-        serve.listen() 
+        serve.listen()
     except socket.error as e:
         print("Error here: ", str(e))
