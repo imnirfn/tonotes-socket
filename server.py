@@ -27,12 +27,13 @@ class server(object):
     def listenToClient(self, client, addr):
         sendmsg = self.server()
         bytes = sendmsg.encode()
+        self.sendOverWebsocket(bytes)
 
-        async def upgradeToWebsocket(websocket, path):
+    def sendOverWebsocket(self, bytes):
+        async def sendMsg(websocket, path):
             await websocket.send(bytes)
 
-        start_server = websockets.serve(upgradeToWebsocket, self.host,
-                                        self.wsport)
+        start_server = websockets.serve(sendMsg, self.host, self.wsport)
         asyncio.get_event_loop().run_until_complete(start_server)
         asyncio.get_event_loop().run_forever()
 
