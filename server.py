@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 import requests
+import websockets
+import asyncio
 import socket
 import os
-from _thread import *
-from requests.exceptions import HTTPError
+from _thread import start_new_thread
+from requests.execptions import HTTPError
 
 class server(object):
-    def __init__(self, host, port):
+    def __init__(self, host, port, wsport):
         self.host = host
         self.port = port
+        self.wsport = wsport
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind((self.host, self.port))
@@ -23,31 +26,37 @@ class server(object):
     def listenToClient(self, client, addr):
         sendmsg = self.server()
         bytes = sendmsg.encode()
-        client.send(bytes)
-        client.close()
+        self.sendOverWebsocket(bytes)
+
+    def sendOverWebsocket(self, bytes):
+        async def sendMsg(websocket, path):
+            await websocket.send(bytes)
+
+        start_server = websockets.serve(sendMsg, self.host, self.wsport)
+        asyncio.get_event_loop().run_until_complete(start_server)
+        asyncio.get_event_loop().run_forever()
 
     def server(self):
         # TO-DO
-        return 'data'
 
-    def HttpRequest (add):
+    def HTTPRequest (addr):
         try:
-            receive = requests.get(add)
+            receive = requests.get(addr)
 
-        except HTTPError as http_err:
-            print (f'HTTP error occured : {http_err}')
+        except HTTPError as httperr:
+            print (f'HTTP error occured : {httperr}')
 
         except Exeption as err:
-            print (f'Other error occrred: {err}')
-        
+            print (f'Other error occured : {err}')
+
         else:
-            msg = "Sucessfully HTTP request"
-        
+            msg = "Sucessfully get Http Request ! "
+
         return msg
 
 if __name__ == '__main__':
     try:
-        serve = server('localhost', 13337)
-        serve.listen() 
+        serve = server('localhost', 13337, 13338)
+        serve.listen()
     except socket.error as e:
-        print("Error here: ", str(e))
+        print("Error here: ", str(e)
