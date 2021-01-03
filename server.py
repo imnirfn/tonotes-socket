@@ -21,8 +21,7 @@ class server(object):
         self.socket.listen(5)
         while True:
             client, addr = self.socket.accept()
-            #start_new_thread(self.listenToClient, (client, addr))
-            self.listenToClient(client, addr)
+            start_new_thread(self.listenToClient, (client, addr))
 
     def listenToClient(self, client, addr):
         sendmsg = self.server()
