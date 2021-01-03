@@ -6,7 +6,7 @@ import asyncio
 import socket
 import os
 from _thread import start_new_thread
-from requests.execptions import HTTPError
+from requests.exceptions import HTTPError
 
 class server(object):
     def __init__(self, host, port, wsport):
@@ -45,9 +45,11 @@ class server(object):
 
         except HTTPError as httperr:
             print (f'HTTP error occured : {httperr}')
+            msg = "Unsucessfull to get HTTP Request !"
 
-        except Exeption as err:
+        except Exception as err:
             print (f'Other error occured : {err}')
+            msg = "Unsuccessfull to get HTTP Request !"
 
         else:
             msg = "Sucessfully get Http Request ! "
@@ -59,4 +61,4 @@ if __name__ == '__main__':
         serve = server('localhost', 13337, 13338)
         serve.listen()
     except socket.error as e:
-        print("Error here: ", str(e)
+        print("Error here: ", str(e))
