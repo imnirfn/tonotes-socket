@@ -4,6 +4,7 @@ import requests
 import socket
 import os
 from _thread import *
+from requests.exceptions import HTTPError
 
 class server(object):
     def __init__(self, host, port):
@@ -28,6 +29,21 @@ class server(object):
     def server(self):
         # TO-DO
         return 'data'
+
+    def HttpRequest (add):
+        try:
+            receive = requests.get(add)
+
+        except HTTPError as http_err:
+            print (f'HTTP error occured : {http_err}')
+
+        except Exeption as err:
+            print (f'Other error occrred: {err}')
+        
+        else:
+            msg = "Sucessfully HTTP request"
+        
+        return msg
 
 if __name__ == '__main__':
     try:
