@@ -52,7 +52,7 @@ class server(object):
             msg = "Unsuccessfull to get HTTP Request !"
 
         else:
-            msg = "Sucessfully get Http Request ! "
+            msg = "Sucessfully get Http Request !"
 
         return msg
 
