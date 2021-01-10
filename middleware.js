@@ -95,3 +95,24 @@ function tcp2ws() {
 	server.listen(argv.lport);
 }
 
+function ws2tcp() {
+
+	console.log('proxy mode ws -> tcp');
+	console.log('forwarding port ' + argv.lport + ' to ' + argv.rhost);
+
+	wss = new ws_module.Server({port: argv.lport});
+	wss.on('connection', function(ws) {
+		var addr_port = argv.rhost.split(':');
+		var s = net.connect(addr_port[1],addr_port[0]);
+		
+		var state = {
+			sReady : false,
+			wsReady : true, // there is no callback so maybe its already connected
+			wsBuffer: [],
+			sBuffer : []
+		};
+		initSocketCallbacks(state,ws,s);
+	});
+
+}
+
