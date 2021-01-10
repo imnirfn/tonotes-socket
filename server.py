@@ -18,7 +18,7 @@ class server(object):
         self.socket.bind((self.host, self.port))
 
     def listen(self):
-        self.socket.listen(5)
+        self.socket.listen(7)
         while True:
             client, addr = self.socket.accept()
             start_new_thread(self.listenToClient, (client, addr))
@@ -38,12 +38,16 @@ class server(object):
 
     def server(self):
         # TO-DO
-        return 'data'
+        url = 'http://localhost:3000/notes'
+        response = requests.get(url)
+        print(response.text)
+        return response.text
 
 
 if __name__ == '__main__':
     try:
         serve = server('localhost', 13337, 13338)
+        print('Server started')
         serve.listen()
     except socket.error as e:
         print("Error here: ", str(e))
