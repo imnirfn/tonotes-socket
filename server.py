@@ -24,6 +24,8 @@ class server(object):
             start_new_thread(self.listenToClient, (client, addr))
 
     def listenToClient(self, client, addr):
+        data = client.recv(1024)
+        print('data', data)
         sendmsg = self.server()
         bytes = sendmsg.encode()
         self.sendOverWebsocket(bytes)
